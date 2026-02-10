@@ -17,7 +17,13 @@ link() {
   ln -s "$src" "$dst"
 }
 
-files=(.zshrc .zprofile)
+files=(
+  zsh/.zshrc
+  zsh/.zprofile 
+  zsh/aliases.zsh
+  git/.gitconfig 
+  git/.gitignore_global
+)
 for f in "${files[@]}"; do
-  link "$DOTFILES_DIR/$f" "$HOME/$f"
+  link "$DOTFILES_DIR/$f" "$HOME/${f:t}"
 done

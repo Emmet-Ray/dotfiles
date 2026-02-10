@@ -1,0 +1,6 @@
+alias ls='eza'
+alias ll='eza -lh --icons'
+alias la='eza -a'
+alias lla='ll -a'
+alias ..='cd ..'
+alias ...='cd ../..'
