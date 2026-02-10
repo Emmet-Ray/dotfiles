@@ -1,0 +1,5 @@
+# macOS
+.DS_Store
+
+# 本地信息
+*/*.local
