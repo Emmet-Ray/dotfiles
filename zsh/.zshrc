@@ -7,7 +7,7 @@ ALIAS_PATH="$ZSHRC_DIR/aliases.zsh"
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
 
 # 设置初始窗口大小
-printf '\e[8;40;120t'
+printf '\e[8;30;110t'
 # 启用vim
 bindkey -v
 bindkey "^R" history-incremental-search-backward
