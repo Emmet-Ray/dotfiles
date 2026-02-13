@@ -3,3 +3,6 @@
 
 # 本地信息
 */*.local
+
+# todo file
+todo.md
