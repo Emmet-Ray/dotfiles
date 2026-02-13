@@ -65,6 +65,8 @@ required_files=(
   # git
   git/.gitconfig
   git/.gitignore_global
+  # tmux
+  tmux/.tmux.conf
 )
 
 optional_files=(
