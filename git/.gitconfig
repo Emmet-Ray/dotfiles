@@ -6,13 +6,5 @@
 [core]
    excludesfile = ~/.gitignore_global
 [alias]
-  cm = commit -m
-  graph = log --oneline --graph --decorate --all
   last = log -1
   unstage = restore --staged --
-  #st = status -sb
-  #co = checkout
-  #sw = switch
-  #br = branch
-  #ci = commit
-  #ca = commit -a
