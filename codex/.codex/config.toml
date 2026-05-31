@@ -1,0 +1,155 @@
+model = "gpt-5.5"
+model_reasoning_effort = "high"
+
+# Reasoning summary: auto | concise | detailed | none (default: auto)
+model_reasoning_summary = "auto"
+
+# Text verbosity for GPT-5 family (Responses API): low | medium | high (default: medium)
+model_verbosity = "medium"
+personality = "pragmatic"
+
+
+notify = ["/Users/limengtao/.codex/computer-use/Codex Computer Use.app/Contents/SharedSupport/SkyComputerUseClient.app/Contents/MacOS/SkyComputerUseClient", "turn-ended"]
+
+[mcp_servers.context7]
+command = "npx"
+args = ["-y", "@upstash/context7-mcp"]
+
+[mcp_servers.figma]
+url = "https://mcp.figma.com/mcp"
+enabled = false
+
+[mcp_servers.node_repl]
+args = []
+command = "/Applications/Codex.app/Contents/Resources/node_repl"
+startup_timeout_sec = 120
+
+[mcp_servers.node_repl.env]
+BROWSER_USE_AVAILABLE_BACKENDS = "chrome,iab"
+BROWSER_USE_MARKETPLACE_NAME = "openai-bundled"
+CODEX_CLI_PATH = "/Applications/Codex.app/Contents/Resources/codex"
+CODEX_HOME = "/Users/limengtao/.codex"
+NODE_REPL_NATIVE_PIPE_CONNECT_TIMEOUT_MS = "1000"
+NODE_REPL_NODE_MODULE_DIRS = ""
+NODE_REPL_NODE_PATH = "/Applications/Codex.app/Contents/Resources/node"
+NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S = "167fdf579477181fba1773c1efb067b00c5a64fe85dafb50a2001bde198dc739"
+NODE_REPL_TRUSTED_CODE_PATHS = "/Users/limengtao/.codex"
+NODE_REPL_UNTRUSTED_ENV_ALLOWLIST = "BROWSER_USE_MARKETPLACE_NAME"
+[tui]
+notifications = true # Keep built-in notifications too
+theme = "github"
+
+[tui.model_availability_nux]
+"gpt-5.5" = 4
+
+[projects."/Users/limengtao/Desktop/多模态群聊安全/multimodal_chat_moderation"]
+trust_level = "trusted"
+
+[projects."/Users/limengtao/Desktop"]
+trust_level = "untrusted"
+
+[projects."/Users/limengtao/Desktop/graduate_student"]
+trust_level = "untrusted"
+
+[projects."/Users/limengtao"]
+trust_level = "trusted"
+
+[projects."/Users/limengtao/Desktop/graduate_student/projects/personal/programming_tools_101"]
+trust_level = "untrusted"
+
+[projects."/Users/limengtao/Desktop/graduate_student/projects/personal/guitar_fretboard_trainer/front_end_react"]
+trust_level = "trusted"
+
+[projects."/Users/limengtao/Desktop/graduate_student/公安论文/v2"]
+trust_level = "trusted"
+
+[projects."/Users/limengtao/Desktop/graduate_student/projects/personal/FretDrill"]
+trust_level = "trusted"
+
+[projects."/Users/limengtao/Desktop/test_reproduce/github_projects/pi-mono"]
+trust_level = "trusted"
+
+[projects."/Users/limengtao/Desktop/test_reproduce/github_projects/hello-agents"]
+trust_level = "trusted"
+
+[projects."/Users/limengtao/Desktop/test_reproduce/github_projects/learn-claude-code"]
+trust_level = "trusted"
+
+[projects."/Users/limengtao/Desktop/graduate_student/projects/voip"]
+trust_level = "trusted"
+
+[projects."/Users/limengtao/Projects/projects/voip"]
+trust_level = "trusted"
+
+[projects."/Users/limengtao/Projects/projects/personal/FretDrill"]
+trust_level = "trusted"
+
+[projects."/Users/limengtao/.codex"]
+trust_level = "trusted"
+
+[projects."/Users/limengtao/Projects/projects/multi_agent_profile_report"]
+trust_level = "trusted"
+
+[projects."/Users/limengtao/Projects/ai_projects/interactive_music_theory_for_guitarists"]
+trust_level = "trusted"
+
+[projects."/Users/limengtao/Desktop/books/notes/the_art_of_unix_programming"]
+trust_level = "trusted"
+
+[projects."/Users/limengtao/dotfiles"]
+trust_level = "trusted"
+
+[features]
+multi_agent = true
+hooks = true
+goals = true
+js_repl = false
+
+
+[plugins."github@openai-curated"]
+enabled = true
+
+[plugins."figma@openai-curated"]
+enabled = true
+
+[plugins."documents@openai-primary-runtime"]
+enabled = true
+
+[plugins."spreadsheets@openai-primary-runtime"]
+enabled = true
+
+[plugins."presentations@openai-primary-runtime"]
+enabled = true
+
+[plugins."browser@openai-bundled"]
+enabled = true
+
+[hooks.state]
+
+[hooks.state."/Users/limengtao/.codex/hooks.json:permission_request:0:0"]
+enabled = true
+trusted_hash = "sha256:ae8a416783530efb4b8f36039431003ea3c3953f0a1aef7db0726a4205310fe3"
+
+[hooks.state."/Users/limengtao/.codex/hooks.json:stop:0:0"]
+enabled = true
+trusted_hash = "sha256:f38aa656fa67c4c14774f985254a740c50f79fab1d286d9528fc0a735244da74"
+
+[hooks.state."/Users/limengtao/.codex/hooks.json:user_prompt_submit:0:0"]
+enabled = true
+trusted_hash = "sha256:4fd7507c9c7011273823fd7a8af4d894ac1ee612fa744681efa2040ee71c97de"
+
+[marketplaces.openai-bundled]
+last_updated = "2026-05-26T06:45:55Z"
+source_type = "local"
+source = "/Users/limengtao/.codex/.tmp/bundled-marketplaces/openai-bundled"
+
+[marketplaces.openai-primary-runtime]
+last_updated = "2026-05-21T09:43:36Z"
+source_type = "local"
+source = "/Users/limengtao/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
+
+[desktop]
+appearanceTheme = "system"
+localeOverride = "en-US"
+notifications-turn-mode = "off"
+notifications-permissions-enabled = true

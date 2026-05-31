@@ -3,86 +3,55 @@ set -euo pipefail
 
 DOTFILES_DIR="$(cd -- "$(dirname -- "$0")" && pwd)"
 BACKUP_DIR="$HOME/.dotfiles_backup/$(date +%F_%H%M%S)"
+PACKAGES=(
+  zsh
+  git
+  tmux
+  codex
+)
 
 echo "Installing dotfiles from: $DOTFILES_DIR"
-mkdir -p "$BACKUP_DIR"
 
-typeset -i total=0
-typeset -i skipped=0
+if ! command -v stow >/dev/null 2>&1; then
+  echo "Error: GNU Stow is not installed. Run ./bootstrap.sh first." >&2
+  exit 1
+fi
+
 typeset -i backed_up=0
-typeset -i linked=0
-typeset -i created=0
-typeset -i relinked=0
-typeset -i optional_missing=0
+typeset -i already_linked=0
 
-link_required() {
-  local src="$1"
-  local dst="$2"
-  local had_existing=0
+backup_stow_conflicts() {
+  local package="$1"
 
-  if [ ! -e "$src" ]; then
-    echo "Error: required source file does not exist: $src" >&2
+  if [ ! -d "$DOTFILES_DIR/$package" ]; then
+    echo "Error: stow package does not exist: $DOTFILES_DIR/$package" >&2
     exit 1
   fi
 
-  if [ -L "$dst" ] && [ "$(readlink "$dst")" = "$src" ]; then
-    ((skipped += 1))
-    return
-  fi
+  while IFS= read -r -d '' src; do
+    local rel="${src#$DOTFILES_DIR/$package/}"
+    local dst="$HOME/$rel"
 
-  if [ -e "$dst" ] || [ -L "$dst" ]; then
-    mv "$dst" "$BACKUP_DIR/"
-    ((backed_up += 1))
-    had_existing=1
-  fi
+    if [ -L "$dst" ] && [ "${dst:A}" = "${src:A}" ]; then
+      ((already_linked += 1))
+      continue
+    fi
 
-  ln -s "$src" "$dst"
-  ((linked += 1))
-  if (( had_existing )); then
-    ((relinked += 1))
-  else
-    ((created += 1))
-  fi
+    if [ -e "$dst" ] || [ -L "$dst" ]; then
+      local backup="$BACKUP_DIR/$rel"
+      mkdir -p "${backup:h}"
+      mv "$dst" "$backup"
+      ((backed_up += 1))
+    fi
+  done < <(find "$DOTFILES_DIR/$package" -type f -print0)
 }
 
-link_optional() {
-  local src="$1"
-  local dst="$2"
-
-  if [ ! -e "$src" ]; then
-    ((optional_missing += 1))
-    return
-  fi
-
-  link_required "$src" "$dst"
-}
-
-required_files=(
-  # zsh
-  zsh/.zshrc
-  zsh/.zprofile
-  zsh/aliases.zsh
-  # git
-  git/.gitconfig
-  git/.gitignore_global
-  # tmux
-  tmux/.tmux.conf
-)
-
-optional_files=(
-  # local-only file, if you choose to keep one in repo
-  zsh/.zshrc.local
-)
-
-for f in "${required_files[@]}"; do
-  ((total += 1))
-  link_required "$DOTFILES_DIR/$f" "$HOME/${f:t}"
+for package in "${PACKAGES[@]}"; do
+  backup_stow_conflicts "$package"
 done
 
-for f in "${optional_files[@]}"; do
-  ((total += 1))
-  link_optional "$DOTFILES_DIR/$f" "$HOME/${f:t}"
-done
+cd "$DOTFILES_DIR"
+stow --no-folding --target="$HOME" "${PACKAGES[@]}"
 
 if (( backed_up == 0 )); then
   rmdir "$BACKUP_DIR" 2>/dev/null || true
@@ -91,13 +60,9 @@ fi
 echo
 
 echo "Install summary"
-echo "- Total:            $total"
-echo "- Changed:          $linked"
-echo "  - New links:      $created"
-echo "  - Relinked:       $relinked"
-echo "- Already linked:   $skipped"
+echo "- Packages:         ${PACKAGES[*]}"
+echo "- Already linked:   $already_linked"
 echo "- Backed up:        $backed_up"
-echo "- Optional missing: $optional_missing"
 
 if (( backed_up > 0 )); then
   echo "- Backup directory:    $BACKUP_DIR"

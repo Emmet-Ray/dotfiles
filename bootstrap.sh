@@ -6,5 +6,5 @@ if ! command -v brew >/dev/null 2>&1; then
   exit 1
 fi
 
-# Core tools used by zsh config and aliases.
-brew install zoxide fzf eza bat zsh-syntax-highlighting zsh-autosuggestions
+# Core tools used by install.sh, zsh config, and aliases.
+brew install stow zoxide fzf eza bat zsh-syntax-highlighting zsh-autosuggestions
