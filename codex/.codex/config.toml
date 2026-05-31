@@ -1,5 +1,5 @@
 model = "gpt-5.5"
-model_reasoning_effort = "high"
+model_reasoning_effort = "xhigh"
 
 # Reasoning summary: auto | concise | detailed | none (default: auto)
 model_reasoning_summary = "auto"
@@ -7,6 +7,10 @@ model_reasoning_summary = "auto"
 # Text verbosity for GPT-5 family (Responses API): low | medium | high (default: medium)
 model_verbosity = "medium"
 personality = "pragmatic"
+
+sandbox_mode = "workspace-write"
+approval_policy = "on-request"
+approvals_reviewer = "auto_review"
 
 
 notify = ["/Users/limengtao/.codex/computer-use/Codex Computer Use.app/Contents/SharedSupport/SkyComputerUseClient.app/Contents/MacOS/SkyComputerUseClient", "turn-ended"]
@@ -99,6 +103,12 @@ trust_level = "trusted"
 [projects."/Users/limengtao/dotfiles"]
 trust_level = "trusted"
 
+[projects."/Users/limengtao/Projects/test_reproduce/worktree"]
+trust_level = "trusted"
+
+[projects."/Users/limengtao/Projects/test_reproduce/worktree/main"]
+trust_level = "trusted"
+
 [features]
 multi_agent = true
 hooks = true
@@ -139,12 +149,12 @@ enabled = true
 trusted_hash = "sha256:4fd7507c9c7011273823fd7a8af4d894ac1ee612fa744681efa2040ee71c97de"
 
 [marketplaces.openai-bundled]
-last_updated = "2026-05-26T06:45:55Z"
+last_updated = "2026-05-31T09:59:00Z"
 source_type = "local"
 source = "/Users/limengtao/.codex/.tmp/bundled-marketplaces/openai-bundled"
 
 [marketplaces.openai-primary-runtime]
-last_updated = "2026-05-21T09:43:36Z"
+last_updated = "2026-05-31T08:52:23Z"
 source_type = "local"
 source = "/Users/limengtao/.cache/codex-runtimes/codex-primary-runtime/plugins/openai-primary-runtime"
 
