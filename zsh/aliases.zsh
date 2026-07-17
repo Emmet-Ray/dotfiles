@@ -9,9 +9,8 @@ else
   alias lla='ls -alh'
 fi
 
-# system
-alias ..='cd ..'
-alias ...='cd ../..'
+# codex cli
+alias ask='codex exec --skip-git-repo-check --ephemeral'
 
 # git
 alias ginit='git init'
@@ -27,3 +26,7 @@ alias glog='git log'
 alias glast='git log -1'
 alias ggraph='git log --oneline --graph --decorate --all'
 alias gunstage='git restore --staged --'
+
+# system
+alias ..='cd ..'
+alias ...='cd ../..'
