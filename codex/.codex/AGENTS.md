@@ -15,142 +15,127 @@ This section defines local machine and command-line defaults.
 - Do not install packages globally unless explicitly asked.
 - If no project convention exists, prefer `uv` for Python dependency and environment management.
 
-# Engineering and Coding Standards
+# Software Design Guidance
 
-## Core Principle
+## Design Goal
 
-Working code is necessary but not sufficient. Code must also be easy to understand, easy to modify, easy to test, and hard to misuse.
+Working code is not enough. Prefer designs that make the system easier to understand, modify, test, and review over time.
 
-Prefer strategic programming over tactical programming. Do not solve the immediate problem by adding fragile patches, duplicated logic, or special cases that make the system harder to maintain later.
+The main design goal is to control complexity. Treat complexity as anything that makes future changes harder, especially:
 
-Optimize for long-term clarity and maintainability, not just short-term implementation speed.
+- change amplification: one small behavior change requires edits in many places;
+- cognitive load: readers must keep too many details in mind;
+- unknown unknowns: important behavior or constraints are not obvious from the code.
 
-## Complexity Management
+## Default Decision Rule
 
-- Treat complexity as the main enemy of software design.
-- Keep code obvious. A reader should be able to understand the purpose, behavior, and important constraints of the code without excessive context.
-- Avoid changes that make future changes harder, even if they work today.
-- Complexity accumulates incrementally. Small unclear names, small duplicated branches, small leaked assumptions, and small special cases matter.
-- When complexity is unavoidable, hide it behind a clear and stable abstraction.
-- Prefer simple interfaces even if the implementation behind them is somewhat more complex.
-- Do not expose internal details, storage formats, ordering assumptions, framework quirks, or low-level implementation choices unless callers genuinely need them.
+When choosing between designs, prefer the one that:
 
-## Module and API Design
+1. keeps the public interface simpler;
+2. hides implementation details and unstable decisions;
+3. localizes future changes;
+4. makes important behavior obvious;
+5. fits existing project conventions.
 
-- Prefer deep modules: a module should provide a simple interface while encapsulating meaningful behavior.
-- Avoid shallow modules: do not create classes, functions, or wrappers whose interface is almost as complex as their implementation.
-- Design APIs around the common case. The common path should be simple, explicit, and hard to misuse.
-- Keep rare options optional and out of the way.
-- Separate general-purpose code from special-purpose code.
-- Push complexity downward into the module that has the information needed to handle it correctly.
-- Avoid pass-through methods, pass-through classes, and pass-through variables that merely forward calls without adding a distinct abstraction.
-- Different layers should provide different abstractions. Do not create layers that simply rename or mirror the layer below.
-- Avoid temporal decomposition: do not structure modules only around the chronological order of execution. Structure them around stable concepts and hidden design decisions.
-- Combine code when it shares important information or when combining it simplifies the interface.
-- Split code when it separates independent concepts, isolates special-purpose behavior, or improves information hiding.
-- Prefer somewhat general abstractions, but do not overgeneralize for hypothetical future requirements.
+Do not optimize for the smallest immediate patch if it creates duplicated logic, leaked assumptions, special cases, or unclear ownership.
 
-## Designing Changes
+## Change Workflow
 
-- Before making a non-trivial change, understand the existing abstraction and where the new behavior belongs.
-- For important design decisions, consider at least two possible designs before implementing.
-- Choose the design that reduces complexity for callers and localizes future changes.
-- When adding a feature, look for the underlying abstraction that should own the behavior instead of only adding branches to existing code.
-- Make focused changes. Avoid unrelated rewrites unless they are necessary to support the requested change.
-- When modifying existing code, leave the touched area cleaner when it is safe and relevant.
-- Preserve existing conventions unless there is a strong reason to change them.
-- Do not introduce new patterns, dependencies, layers, or abstractions without a concrete benefit.
+For non-trivial changes:
+
+1. Understand the existing abstraction before editing.
+2. Identify where the new behavior belongs.
+3. Consider at least two possible designs when the change affects structure, APIs, or module boundaries.
+4. Choose the design that reduces complexity for callers and keeps related knowledge together.
+5. Make the smallest focused change that preserves or improves the local design.
+6. Update tests and nearby documentation when behavior or contracts change.
+
+## Abstraction and Module Design
+
+Prefer deep modules: simple interfaces with meaningful hidden implementation.
+
+Introduce or keep an abstraction only when it hides real complexity, protects callers from internal decisions, or localizes future changes.
+
+Avoid shallow abstractions:
+
+- pass-through classes;
+- pass-through methods;
+- wrappers that only rename another API;
+- layers that mirror the layer below without adding a distinct concept.
+
+Do not organize code purely by execution order. Organize it around stable concepts, ownership, and hidden design decisions.
+
+Keep general-purpose logic separate from special-purpose policy. Push specialization upward when possible, but push complexity downward when the lower module has the information needed to handle it correctly.
+
+## Information Hiding
+
+Do not expose storage formats, ordering assumptions, framework quirks, low-level errors, or internal control flow unless they are part of the intended contract.
+
+If callers must know too much about a callee’s internals, redesign the interface.
+
+If the same design decision appears in multiple modules, move that decision behind a single abstraction.
 
 ## Error Handling
 
-- Prefer designing errors out of existence over adding more error handling.
-- Make invalid states unrepresentable when practical.
-- Use clear validation at boundaries.
-- Do not force every caller to handle low-level exceptions that can be handled or normalized inside the module.
-- Aggregate, translate, or mask low-level errors when that produces a simpler and more useful interface.
-- Fail early for violated invariants.
-- Error messages should be actionable and include relevant context without exposing unnecessary internals.
+Prefer designing errors out of existence over adding more error handling.
 
-## Naming
+Make invalid states unrepresentable when practical.
 
-- Use precise, consistent, and intention-revealing names.
-- A good name should create a clear mental image of what the thing represents.
-- Avoid vague names such as `data`, `info`, `manager`, `helper`, `processor`, `stuff`, or `temp` unless the scope is extremely small and the meaning is obvious.
-- Avoid names that are too broad for what the code actually does.
-- Avoid extra words that do not add meaning.
-- Use the same word for the same concept everywhere.
-- Use different words for different concepts.
-- If a good name is hard to find, treat it as a design smell. The concept may not be clean enough yet.
+Validate at boundaries. Normalize, aggregate, or translate low-level errors inside the module when that gives callers a simpler and more useful interface.
 
-## Comments and Documentation
+Fail early when invariants are violated. Error messages should be actionable and include relevant context without exposing unnecessary internals.
 
-- Comments should explain things that are not obvious from the code.
-- Do not write comments that merely repeat what the code says.
-- Use comments to document purpose, contracts, invariants, assumptions, trade-offs, edge cases, and non-obvious design decisions.
-- Interface comments should describe how to use the abstraction, what it guarantees, and what callers should not rely on.
-- Interface comments should not expose implementation details unless those details are part of the contract.
-- Implementation comments should explain why the code exists or why it is written in a particular way, not narrate every line.
-- Keep comments close to the code they describe.
-- Update comments when changing behavior.
-- For non-trivial public APIs, write or sketch the interface documentation before implementation. Use the documentation as a design tool.
-- Prefer higher-level comments that clarify intent over low-level comments that duplicate mechanics.
+## Names and Comments
 
-## Readability
+Names should reveal the concept, not the implementation accident. Use the same word for the same concept everywhere, and different words for different concepts.
 
-- Code should be designed for ease of reading, not ease of writing.
-- Prefer straightforward control flow.
-- Avoid clever code unless it is clearly justified.
-- Avoid hidden side effects.
-- Avoid excessive nesting.
-- Keep related logic together.
-- Keep unrelated logic separate.
-- Make dependencies explicit.
-- Make important behavior easy to find.
-- If code requires a long explanation to understand, consider redesigning it.
+If a good name is hard to find, treat it as a design smell.
 
-## Tests
+Comments should explain what is not obvious from the code:
 
-- Tests should verify behavior, not implementation details.
-- Add or update tests for meaningful behavior changes, bug fixes, edge cases, and error paths.
-- Keep tests deterministic, focused, and readable.
-- Test names should describe the behavior being tested.
-- Difficult test setup is often a sign of a poor interface or excessive coupling.
-- Passing tests do not justify bad design. Tests are a safety net, not a substitute for clear abstractions.
-- Prefer tests that make future refactoring safer.
+- purpose;
+- contracts;
+- invariants;
+- assumptions;
+- trade-offs;
+- edge cases;
+- non-obvious design decisions.
+
+Do not write comments that merely repeat the code.
+
+For non-trivial public APIs, write or sketch the interface comment before implementation and use it as a design check.
+
+## Tests and Verification
+
+Tests should verify behavior, not implementation details.
+
+Add or update tests for behavior changes, bug fixes, edge cases, and error paths.
+
+Difficult test setup is often a design smell: it may indicate a poor interface, hidden coupling, or unclear ownership.
+
+Passing tests do not justify bad design. Tests are a safety net, not a substitute for clear abstractions.
 
 ## Performance
 
-- Do not optimize prematurely.
-- Measure before and after performance-sensitive changes.
-- Optimize around the actual critical path.
-- Avoid scattering micro-optimizations across the codebase.
-- Preserve clarity unless the performance benefit is real and important.
-- If an optimization makes code less obvious, document the reason, the measured evidence, and the relevant constraints.
+Do not optimize prematurely.
 
-## Red Flags
+For performance-sensitive changes, identify the critical path and measure before and after.
 
-Actively look for these design smells and fix them when they are relevant to the current task:
+Avoid scattering micro-optimizations across the codebase. If an optimization makes code less obvious, document the measured reason and the relevant constraints.
 
-- A module has a complicated interface but little internal functionality.
-- A design decision is duplicated across multiple modules.
-- A caller must know too much about a callee’s internal behavior.
-- A method only forwards arguments to another method without adding a useful abstraction.
-- Code is organized around execution order rather than stable concepts.
-- General-purpose logic and special-purpose logic are mixed together.
-- The same non-trivial logic appears in multiple places.
-- A name is vague, misleading, or hard to choose.
-- A comment repeats the code instead of explaining intent.
-- A small change requires edits in many unrelated places.
-- A function or class is hard to describe concisely.
-- The code works, but its behavior is not obvious.
+## Design Red Flags
 
-## Preferred Implementation Style
+Pause and reconsider the design when you see:
 
-- Prefer small, cohesive functions and classes with clear responsibilities.
-- Prefer explicit data models and well-defined boundaries.
-- Prefer boring, reliable code over clever code.
-- Prefer local reasoning: a reader should not need to inspect many distant files to understand a change.
-- Prefer standard library and existing project utilities before adding new dependencies.
-- Reuse existing helpers, patterns, and conventions before inventing new ones.
-- Keep public interfaces stable unless changing them clearly improves the design.
-- When introducing a new abstraction, make sure it hides real complexity rather than merely adding another layer.
+- a small change requiring edits in many unrelated places;
+- a caller depending on callee internals;
+- duplicated non-trivial logic;
+- unclear ownership of behavior;
+- vague names such as manager, helper, processor, data, info;
+- a class or function that is hard to describe concisely;
+- wrappers that only forward calls;
+- special cases accumulating around the main logic;
+- comments explaining mechanics instead of intent;
+- code that works but is not obvious.
+
+When a red flag appears in code you are touching, fix it if doing so is relevant and safe. Otherwise, call it out explicitly instead of silently expanding the problem.
